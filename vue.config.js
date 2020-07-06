@@ -15,7 +15,7 @@ module.exports = {
          * 不适合放基础样式/全局样式，因为这样会在生成的每个css中都有基础或全局的样式
          */
         prependData: `
-          @import "@/common/css/common.scss";
+          @import "@styles/common.scss";
         `,
       },
     },
@@ -30,7 +30,8 @@ module.exports = {
     config.resolve.alias
       .set('@components', resolve('src/components'))
       .set('@assets', resolve('src/assets'))
-      .set('@common', resolve('src/common'))
+      .set('@styles', resolve('src/styles'))
+      .set('@utils', resolve('src/utils'))
     // html标题
     config.plugin('html').tap(args => {
       args[0].title = '冰封商城后台管理'
