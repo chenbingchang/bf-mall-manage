@@ -4,7 +4,7 @@ function resolve (dir) {
 }
 
 module.exports = {
-  publicPath: './',
+  publicPath: '/',
   assetsDir: '',
   css: {
     loaderOptions: {

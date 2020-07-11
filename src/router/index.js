@@ -1,23 +1,42 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home,
+    component: () => import(/* webpackChunkName: "Index" */ '@/views/Index.vue'),
+    children: [
+      {
+        path: '/',
+        alias: '/home',
+        name: 'Home',
+        component: () => import(/* webpackChunkName: "Home" */ '@/views/Home.vue'),
+      },
+      {
+        path: '/adminUser',
+        name: 'AdminUser',
+        component: () => import(/* webpackChunkName: "AdminUser" */ '@/views/AdminUser.vue'),
+      },
+      {
+        path: '/wheelImg',
+        name: 'WheelImg',
+        component: () => import(/* webpackChunkName: "WheelImg" */ '@/views/WheelImg.vue'),
+      },
+    ],
   },
-  // {
-  //   path: '/about',
-  //   name: 'About',
-  //   // route level code-splitting
-  //   // this generates a separate chunk (about.[hash].js) for this route
-  //   // which is lazy-loaded when the route is visited.
-  //   component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  // }
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import(/* webpackChunkName: "Login" */ '@/views/Login.vue'),
+  },
+  // 全不匹配的情况下，返回404，路由按顺序从上到下，依次匹配。最后一个*能匹配全部，
+  {
+    path: '*',
+    name: '404',
+    component: () => import(/* webpackChunkName: "404" */ '@/views/404.vue'),
+  },
 ]
 
 const router = new VueRouter({
