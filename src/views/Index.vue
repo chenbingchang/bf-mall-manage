@@ -6,41 +6,18 @@
       >
         <el-menu
           :default-active="$route.name"
-          class="el-menu-demo"
+          class="index__menu"
           mode="vertical"
           :router="true"
           background-color="#001529"
           text-color="#d7d7d7"
           active-text-color="#409eff"
         >
-          <template v-for="item in menuList">
-            <el-submenu
-              v-if="item.children"
-              :key="item.title"
-              :index="item.title"
-            >
-              <template slot="title">
-                <!-- <i class="el-icon-location"></i> -->
-                <span>{{ item.title }}</span>
-              </template>
-              <el-menu-item
-                v-for="child in item.children"
-                :key="child.index"
-                :index="child.index"
-                :route="child.route"
-              >
-                {{ child.name }}
-              </el-menu-item>
-            </el-submenu>
-            <el-menu-item
-              v-else
-              :index="item.index"
-              :route="item.route"
-              :key="item.index"
-            >
-              {{ item.name }}
-            </el-menu-item>
-          </template>
+          <nest-menu
+            v-for="item in menuList"
+            :key="item.index"
+            :menu="item"
+          ></nest-menu>
         </el-menu>
       </bf-scrollbar>
     </div>
@@ -50,7 +27,7 @@
           class="index__tabs"
           :value="$route.name"
           type="card"
-          closable
+
           @tab-click="chgTab"
           @tab-remove="removeTab"
         >
@@ -59,6 +36,7 @@
             :key="item.name"
             :label="item.label"
             :name="item.name"
+            :closable="item.name !== 'Home'"
           ></el-tab-pane>
         </el-tabs>
         <div class="index__user">
@@ -95,10 +73,6 @@ export default {
         {
           name: '首页', // 菜单名称
           index: 'Home', // 路由名称
-          // 跳转路由的配置
-          route: {
-            name: 'Home',
-          },
         },
         {
           title: '权限', // 菜单分组名称
@@ -107,9 +81,6 @@ export default {
             {
               name: '管理员',
               index: 'AdminUser',
-              route: {
-                name: 'AdminUser',
-              },
             },
           ],
         },
@@ -117,18 +88,7 @@ export default {
           name: '首页图片轮播', // 菜单名称
           index: 'WheelImg', // 路由名称
           // 跳转路由的配置
-          route: {
-            name: 'WheelImg',
-          },
         },
-        // {
-        //   name: '404页面', // 菜单名称
-        //   index: '404', // 路由名称
-        //   // 跳转路由的配置
-        //   route: {
-        //     name: '404',
-        //   },
-        // },
       ],
       // tabpanel列表
       tabList: [
@@ -187,6 +147,9 @@ export default {
         }
       }
     },
+  },
+  components: {
+    NestMenu: () => import(/* webpackChunkName: "NestMenu" */'@components/common/NestMenu'),
   },
   methods: {
     /**
@@ -255,6 +218,13 @@ export default {
     box-sizing: border-box;
     width: 200px;
     height: 100%;
+    background-color: #001529;
+  }
+
+  &__menu {
+    &.el-menu {
+      border: none;
+    }
   }
 
   &__scroll {

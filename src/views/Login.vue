@@ -34,6 +34,7 @@
 
 <script>
 import { COOKIE_KEY, COOKIE_TIME } from '@utils/constants'
+import { login } from '@/api/login/login'
 
 export default {
   name: 'Login',
@@ -60,10 +61,18 @@ export default {
      * 登录
      */
     onSubmit () {
-      this.$refs.form.validate((valid) => {
+      this.$refs.form.validate(async (valid) => {
         if (valid) {
           // 验证成功
-          // @todo: 登录请求
+          // 登录请求
+          const result = await login({
+            account: this.form.account,
+            pwd: this.form.pwd,
+          })
+
+          if (result) {
+            console.log(result)
+          }
           this.$cookies.set(COOKIE_KEY.userId, 'admin', COOKIE_TIME)
           this.$cookies.set(COOKIE_KEY.name, '陈柄昌', COOKIE_TIME)
           this.$router.push({ path: '/' })

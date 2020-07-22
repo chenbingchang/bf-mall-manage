@@ -8,6 +8,7 @@ import store from './store'
 import BfScrollbar from '@components/common/BfScrollbar'
 import VueCookies from 'vue-cookies'
 import { COOKIE_KEY } from '@utils/constants'
+import '@utils/checkCsrfToken'
 
 Vue.config.productionTip = false
 // elementui全局配置

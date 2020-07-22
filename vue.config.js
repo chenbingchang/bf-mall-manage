@@ -24,6 +24,14 @@ module.exports = {
     hot: true,
     liveReload: true,
     port: 1300,
+    proxy: {
+      '^/api': {
+        target: 'http://localhost:7001',
+        pathRewrite: {
+          '^/api': '',
+        },
+      },
+    },
   },
   chainWebpack: config => {
     // 引入路劲的别名
