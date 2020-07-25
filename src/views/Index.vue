@@ -39,23 +39,29 @@
             :closable="item.name !== 'Home'"
           ></el-tab-pane>
         </el-tabs>
-        <div class="index__user">
-          <div class="index__info">
-            <span class="index__name">陈柄昌</span>
-            <i class="el-icon-arrow-down"></i>
-          </div>
-          <ul class="index__dropdown">
-            <li @click="loginout">退出登录</li>
-          </ul>
-        </div>
+        <el-dropdown
+          class="index__user"
+          @command="handleCommand"
+        >
+          <span class="index__name">
+            陈柄昌
+            <i class="el-icon-arrow-down el-icon--right"></i>
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item
+              command="logout"
+              icon="el-icon-switch-button"
+            >退出登录</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
       </div>
-      <bf-scrollbar
+      <div
         class="index__main"
       >
         <keep-alive>
           <router-view />
         </keep-alive>
-      </bf-scrollbar>
+      </div>
     </div>
   </div>
 </template>
@@ -87,7 +93,6 @@ export default {
         {
           name: '首页图片轮播', // 菜单名称
           index: 'WheelImg', // 路由名称
-          // 跳转路由的配置
         },
       ],
       // tabpanel列表
@@ -105,34 +110,7 @@ export default {
      * @param {Object} newVal 路由对象
      */
     $route (newVal) {
-      // console.log(newVal);
-      let menu = null
-      let isFind = false
-
-      this.menuList.forEach(item => {
-        if (isFind) {
-          return
-        }
-
-        if (item.children) {
-          // 菜单分组
-          item.children.forEach(child => {
-            if (isFind) {
-              return
-            }
-            if (child.index === newVal.name) {
-              menu = child
-              isFind = true
-            }
-          })
-        } else {
-          // 菜单项
-          if (item.index === newVal.name) {
-            menu = item
-            isFind = true
-          }
-        }
-      })
+      const menu = this.findMenu(this.menuList, newVal.name)
 
       // 菜单存在
       if (menu) {
@@ -152,6 +130,34 @@ export default {
     NestMenu: () => import(/* webpackChunkName: "NestMenu" */'@components/common/NestMenu'),
   },
   methods: {
+    /**
+     * 根据路由名称查找menu
+     * @param {Array} menuList 菜单数组
+     * @param {string} routeName 路由名称
+     * @returns {Object} 找到的菜单
+     */
+    findMenu (menuList, routeName) {
+      let menu = null
+
+      for (let i = 0; i < menuList.length; i++) {
+        const item = menuList[i]
+
+        if (item.children && item.children.length > 0) {
+          menu = this.findMenu(item.children, routeName)
+
+          if (menu) {
+            break
+          }
+        } else {
+          if (item.index === routeName) {
+            menu = item
+            break
+          }
+        }
+      }
+
+      return menu
+    },
     /**
      * tab改变，切换路由
      * @param {Object} tab tab对象
@@ -190,6 +196,17 @@ export default {
       } else {
         // 没有找到跳回首页
         this.$router.push({ path: '/' })
+      }
+    },
+    /**
+     * 姓名下拉框
+     * @param {string} command 下拉项的指令
+     */
+    handleCommand (command) {
+      switch (command) {
+        case 'logout':
+          this.loginout()
+          break
       }
     },
     /**
@@ -251,61 +268,30 @@ export default {
     .el-tabs__header {
       margin: 0;
     }
+
+    .el-tabs__item {
+      height: 32px;
+      line-height: 32px;
+    }
   }
 
   &__user {
     flex: 0 0 auto;
-    position: relative;
+    display: flex;
+    justify-content: center;
     padding: 0 20px;
     cursor: pointer;
-
-    &:hover {
-      .index__dropdown {
-        visibility: visible;
-      }
-    }
-  }
-
-  &__info {
-    display: flex;
-    align-items: center;
-    height: 100%;
   }
 
   &__name {
-    margin-right: 14px;
-    color: #333;
-  }
-  /*
-    position: absolute;必须搭配z-index: 1;
-    否则，移到菜单列表时，不会有显示
-  */
-  &__dropdown {
-    position: absolute;
-    right: 20px;
-    top: 100%;
-    z-index: 1;
-    visibility: hidden;
-    box-shadow: 0px 0px 5px #eee;
-    width: 100%;
-    background-color: #fefefe;
-    text-align: center;
-
-    li {
-      height: 36px;
-      padding: 0 20px;
-      line-height: 36px;
-
-      &:hover {
-        background-color: #ecf5ff;
-        color: #66b1ff
-      }
-    }
+    display: flex;
+    align-items: center;
   }
 
   &__main {
     flex: 1 0 auto;
     height: 0;
+    padding: 10px;
   }
 }
 </style>

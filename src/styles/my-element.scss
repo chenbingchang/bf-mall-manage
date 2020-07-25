@@ -2,3 +2,10 @@
 .common-toast {
   top: 30% !important;
 }
+
+// 由于宽度是由里面的input决定，而原本是靠input标签的默认宽度，所以设置一下 
+.el-select {
+  .el-input__inner {
+    width: 120px;
+  }
+}
