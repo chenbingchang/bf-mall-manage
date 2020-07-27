@@ -36,6 +36,7 @@ module.exports = {
   chainWebpack: config => {
     // 引入路劲的别名
     config.resolve.alias
+      .set('#', resolve(''))
       .set('@components', resolve('src/components'))
       .set('@assets', resolve('src/assets'))
       .set('@styles', resolve('src/styles'))

@@ -1,8 +1,8 @@
 <template>
-  <div class="wheel-img">
-    <div class="wheel-img__search">
+  <div class="wheel-img bf-table">
+    <div class="bf-table__search">
       <el-date-picker
-        class="wheel-img__search-item"
+        class="bf-table__search-item"
         v-model="search.startTime"
         type="datetime"
         placeholder="开始时间"
@@ -12,7 +12,7 @@
       >
       </el-date-picker>
       <el-date-picker
-        class="wheel-img__search-item"
+        class="bf-table__search-item"
         v-model="search.endTime"
         type="datetime"
         placeholder="结束时间"
@@ -22,7 +22,7 @@
       >
       </el-date-picker>
       <el-select
-        class="wheel-img__search-item"
+        class="bf-table__search-item"
         v-model="search.status"
         placeholder="状态"
         @change="chgStatus"
@@ -43,37 +43,82 @@
         >
         </el-option>
       </el-select>
+      <el-button
+        class="bf-table__search-item"
+        type="primary"
+        @click="getTableList(true)"
+      >查询</el-button>
+      <el-button
+        class="bf-table__search-item"
+        type="success"
+        @click="handleAdd()"
+      >新增</el-button>
     </div>
-    <div class="wheel-img__table">
+    <bf-scrollbar
+      class="bf-table__table"
+    >
       <el-table
+        size="medium"
         :data="tableData"
-        style="width: 100%"
+        :stripe="true"
+        :border="true"
+        :highlight-current-row="true"
       >
         <el-table-column
           prop="id"
           label="ID"
+          align="center"
         >
         </el-table-column>
         <el-table-column
           prop="startTime"
           label="开始时间"
-          width="180"
+          align="center"
         >
         </el-table-column>
         <el-table-column
           prop="endTime"
           label="结束时间"
+          align="center"
         >
         </el-table-column>
+        <el-table-column
+          label="操作"
+          align="center"
+        >
+          <template slot-scope="scope">
+            <i
+              class="el-icon-edit"
+              title="修改"
+              @click="handleEdit(scope.$index, scope.row)"
+            ></i>
+            <i
+              class="el-icon-delete"
+              title="删除"
+              @click="handleDelete(scope.$index, scope.row)"
+            ></i>
+          </template>
+        </el-table-column>
       </el-table>
-    </div>
-    <div>
-      分页
-    </div>
+    </bf-scrollbar>
+    <el-pagination
+      class="bf-table__page"
+      background
+      layout="prev, pager, next, jumper, sizes, total"
+      :current-page.sync="page.pageIndex"
+      :page-sizes="[10, 20, 50, 100, 500]"
+      :page-size.sync="page.pageSize"
+      :total.sync="page.total"
+      @size-change="getTableList(true)"
+      @current-change="getTableList()"
+    >
+    </el-pagination>
   </div>
 </template>
 
 <script>
+import { getWheelImgList } from '@/api/wheelImg/wheelImg'
+
 export default {
   name: 'WheelImg',
   data () {
@@ -112,16 +157,50 @@ export default {
         },
       },
       // 表格数据
-      tableData: [
-        {
-          id: 'aaaa',
-          startTime: '2020-07-22 15:25:03',
-          endTime: '2020-07-22 15:25:03',
-        },
-      ],
+      tableData: [],
+      page: {
+        pageIndex: 1,
+        pageSize: 10,
+        total: 1000,
+      },
     }
   },
   methods: {
+    /**
+     * 获取列表数据
+     * @param {Boolean} hasReset 是否需要重置页码
+     */
+    async getTableList (hasReset = false) {
+      try {
+        // 重置页码
+        if (hasReset) {
+          this.page.pageIndex = 1
+        }
+
+        const result = await getWheelImgList({
+          startTime: this.search.startTime,
+          endTime: this.search.endTime,
+          status: this.search.status,
+          pageIndex: this.page.pageIndex,
+          pageSize: this.page.pageSize,
+        })
+
+        if (result.subCode && result.subCode === '00200100') {
+          this.tableData = result.data.list
+          this.page.total = result.data.total
+        } else {
+          this.$message({
+            type: 'error',
+            showClose: true, // 显示手动关闭按钮
+            message: result.msg,
+            duration: 1000, // 延迟1秒后关闭
+            customClass: 'common-toast',
+          })
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    },
     /**
      * 比较开始时间、结束时间
      * @param {Boolean} isStartTime 是否是开始时间触发了方法
@@ -146,23 +225,33 @@ export default {
         this.search.status = null
       }
     },
+    /**
+     * 新增
+     */
+    handleAdd () {
+
+    },
+    /**
+     * 编辑
+     */
+    handleEdit () {
+
+    },
+    /**
+     * 删除
+     */
+    handleDelete () {
+
+    },
+  },
+  created () {
+    this.getTableList(true)
   },
 }
 </script>
 
 <style lang="scss">
   .wheel-img {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
 
-    &__search {
-
-    }
-
-    &__search-item + &__search-item {
-      margin-left: 10px;
-    }
   }
 </style>

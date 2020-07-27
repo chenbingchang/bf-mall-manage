@@ -64,18 +64,29 @@ export default {
       this.$refs.form.validate(async (valid) => {
         if (valid) {
           // 验证成功
-          // 登录请求
-          const result = await login({
-            account: this.form.account,
-            pwd: this.form.pwd,
-          })
+          try {
+            // 登录请求
+            const result = await login({
+              account: this.form.account,
+              pwd: this.form.pwd,
+            })
 
-          if (result) {
-            console.log(result)
+            if (result.subCode && result.subCode === '00100100') {
+              this.$cookies.set(COOKIE_KEY.userId, result.data.account, COOKIE_TIME)
+              this.$cookies.set(COOKIE_KEY.name, result.data.name, COOKIE_TIME)
+              this.$router.push({ path: '/' })
+            } else {
+              this.$message({
+                type: 'error',
+                showClose: true, // 显示手动关闭按钮
+                message: result.msg,
+                duration: 1000, // 延迟1秒后关闭
+                customClass: 'common-toast',
+              })
+            }
+          } catch (error) {
+            console.error(error)
           }
-          this.$cookies.set(COOKIE_KEY.userId, 'admin', COOKIE_TIME)
-          this.$cookies.set(COOKIE_KEY.name, '陈柄昌', COOKIE_TIME)
-          this.$router.push({ path: '/' })
         } else {
           // 验证失败
           this.$message({

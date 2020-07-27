@@ -3,9 +3,68 @@
   top: 30% !important;
 }
 
-// 由于宽度是由里面的input决定，而原本是靠input标签的默认宽度，所以设置一下 
-.el-select {
-  .el-input__inner {
-    width: 120px;
+// el-pagination组件small下jumper没有对齐，因为el-pagination__editor的行高和父元素不不一样，导致文字没有垂直居中
+.el-pagination {
+  .el-pagination__editor {
+    &.el-input--small {
+      line-height: 28px;
+    }
+  }
+}
+
+/*
+统一带有表格列表的样式
+*/
+.bf-table {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+
+  &__search {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+
+    // 由于宽度是由里面的input决定，而原本是靠input标签的默认宽度，所以设置一下 
+    .el-select {
+      .el-input__inner {
+        width: 120px;
+      }
+    }
+  }
+
+  &__search-item + &__search-item {
+    margin-left: 10px;
+  }
+
+  &__table {
+    flex: 1 0 auto;
+    height: 0;
+
+    i[class^="el-icon-"] {
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    i[class^="el-icon-"] + i[class^="el-icon-"] {
+      margin-left: 16px;
+    }
+
+    .el-icon-edit {
+      color: $blue;
+    }
+
+    .el-icon-delete {
+      color: $error;
+    }
+  }
+
+  &__page {
+    flex: 0 0 auto;
+    margin-top: 20px;
+    margin-bottom: 10px;
   }
 }
