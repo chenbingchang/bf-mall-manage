@@ -3,7 +3,8 @@ import { Message } from 'element-ui'
 
 const http = axios.create({
   baseURL: '/api', // 代理
-  timeout: 10000,
+  // timeout: 10000,
+  timeout: 1000000,
 })
 
 // 请求拦截器

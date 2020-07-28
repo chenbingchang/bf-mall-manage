@@ -113,6 +113,7 @@
       @current-change="getTableList()"
     >
     </el-pagination>
+    <add-wheel-img ref="addWheelImg"></add-wheel-img>
   </div>
 </template>
 
@@ -164,6 +165,9 @@ export default {
         total: 1000,
       },
     }
+  },
+  components: {
+    AddWheelImg: () => import(/* webpackChunkName: "AddWheelImg" */ '@components/wheelImg/AddWheelImg.vue'),
   },
   methods: {
     /**
@@ -229,7 +233,7 @@ export default {
      * 新增
      */
     handleAdd () {
-
+      this.$refs.addWheelImg.show()
     },
     /**
      * 编辑
