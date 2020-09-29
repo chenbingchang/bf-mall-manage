@@ -1,3 +1,5 @@
+import CryptoJS from 'crypto-js'
+
 /**
  * 防抖
  * @param {Function} fn 实际要执行的函数
@@ -267,4 +269,57 @@ function htmlEncode (str) {
     .replace(/>/g, '&gt;')
 }
 
-export { debounced, throttle, curDateTime, isLastPageLastData, htmlEncode, curTimeObj, computedTimeRange, parseDateTimeStr }
+/**
+ * 加密
+ * @param {string} content 需要加密的内容
+ */
+function Encrypt (content) {
+  // 密钥
+  const key = CryptoJS.enc.Utf8.parse('0880076B18D7EE81')
+  // 偏移
+  const iv = CryptoJS.enc.Utf8.parse('CB3EC842D7C69578')
+  // 需要加密的内容
+  const srcs = CryptoJS.enc.Utf8.parse(content)
+  const result = CryptoJS.AES.encrypt(srcs, key, {
+    iv: iv,
+    mode: CryptoJS.mode.CBC,
+    padding: CryptoJS.pad.Pkcs7,
+  })
+  console.log('加密后的内容：', result)
+
+  return result
+}
+
+/**
+ * 解密
+ * @param {string} content 需要解密的内容
+ */
+function Decrypt (content) {
+  // 密钥
+  const key = CryptoJS.enc.Utf8.parse('0880076B18D7EE81')
+  // 偏移
+  const iv = CryptoJS.enc.Utf8.parse('CB3EC842D7C69578')
+  // 需要加密的内容
+  // const srcs = CryptoJS.enc.Utf8.parse(content)
+  const result = CryptoJS.AES.decrypt(content, key, {
+    iv: iv,
+    mode: CryptoJS.mode.CBC,
+    padding: CryptoJS.pad.Pkcs7,
+  })
+  console.log('解密后的内容：', result)
+
+  return result
+}
+
+export {
+  debounced,
+  throttle,
+  curDateTime,
+  isLastPageLastData,
+  htmlEncode,
+  curTimeObj,
+  computedTimeRange,
+  parseDateTimeStr,
+  Encrypt,
+  Decrypt,
+}

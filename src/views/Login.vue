@@ -35,6 +35,7 @@
 <script>
 import { COOKIE_KEY, COOKIE_TIME } from '@utils/constants'
 import { login } from '@/api/login/login'
+import { Encrypt, Decrypt } from '@utils/common'
 
 export default {
   name: 'Login',
@@ -65,6 +66,8 @@ export default {
         if (valid) {
           // 验证成功
           try {
+            const en1 = Encrypt(this.form.pwd)
+            Decrypt(en1)
             // 登录请求
             const result = await login({
               account: this.form.account,
