@@ -15,7 +15,15 @@ function uploadImg (data) {
   return http.post('/upload/img', data)
 }
 
+/**
+ * 获取lodash
+ */
+function secrectAes () {
+  return http.get('/secrect/aes')
+}
+
 export {
   getCsrfToken,
   uploadImg,
+  secrectAes,
 }

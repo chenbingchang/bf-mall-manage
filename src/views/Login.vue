@@ -35,7 +35,8 @@
 <script>
 import { COOKIE_KEY, COOKIE_TIME } from '@utils/constants'
 import { login } from '@/api/login/login'
-import { Encrypt, Decrypt } from '@utils/common'
+import { Encrypt } from '@utils/common'
+import { mapState } from 'vuex'
 
 export default {
   name: 'Login',
@@ -55,7 +56,12 @@ export default {
           { min: 1, max: 32, message: '密码最多32个字符', trigger: 'change' },
         ],
       },
+      key: null,
+      iv: null,
     }
+  },
+  computed: {
+    ...mapState(['aesKey', 'aesIv']),
   },
   methods: {
     /**
@@ -66,12 +72,11 @@ export default {
         if (valid) {
           // 验证成功
           try {
-            const en1 = Encrypt(this.form.pwd)
-            Decrypt(en1)
+            const encryptStr = Encrypt(this.form.pwd, this.aesKey, this.aesIv)
             // 登录请求
             const result = await login({
               account: this.form.account,
-              pwd: this.form.pwd,
+              pwd: encryptStr,
             })
 
             if (result.subCode && result.subCode === '00100100') {

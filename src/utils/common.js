@@ -272,43 +272,50 @@ function htmlEncode (str) {
 /**
  * 加密
  * @param {string} content 需要加密的内容
+ * @param {string} keyStr 密钥
+ * @param {string} ivStr 偏移
+ * @returns {string} 加密后的base64
  */
-function Encrypt (content) {
+function Encrypt (content, keyStr, ivStr) {
   // 密钥
-  const key = CryptoJS.enc.Utf8.parse('0880076B18D7EE81')
+  const key = CryptoJS.enc.Utf8.parse(keyStr)
   // 偏移
-  const iv = CryptoJS.enc.Utf8.parse('CB3EC842D7C69578')
+  const iv = CryptoJS.enc.Utf8.parse(ivStr)
   // 需要加密的内容
   const srcs = CryptoJS.enc.Utf8.parse(content)
-  const result = CryptoJS.AES.encrypt(srcs, key, {
+  const encryptObj = CryptoJS.AES.encrypt(srcs, key, {
     iv: iv,
     mode: CryptoJS.mode.CBC,
     padding: CryptoJS.pad.Pkcs7,
   })
-  console.log('加密后的内容：', result)
+  // toString默认是HEX格式，Base64内容更短便于传输
+  const encryptStr = encryptObj.ciphertext.toString(CryptoJS.enc.Base64)
+  console.log('加密后的内容：', encryptStr)
 
-  return result
+  return encryptStr
 }
 
 /**
  * 解密
  * @param {string} content 需要解密的内容
+ * @param {string} keyStr 密钥
+ * @param {string} ivStr 偏移
+ * @returns {string} 解密后的内容
  */
-function Decrypt (content) {
+function Decrypt (content, keyStr, ivStr) {
   // 密钥
-  const key = CryptoJS.enc.Utf8.parse('0880076B18D7EE81')
+  const key = CryptoJS.enc.Utf8.parse(keyStr)
   // 偏移
-  const iv = CryptoJS.enc.Utf8.parse('CB3EC842D7C69578')
-  // 需要加密的内容
-  // const srcs = CryptoJS.enc.Utf8.parse(content)
-  const result = CryptoJS.AES.decrypt(content, key, {
+  const iv = CryptoJS.enc.Utf8.parse(ivStr)
+  const decryptObj = CryptoJS.AES.decrypt(content, key, {
     iv: iv,
     mode: CryptoJS.mode.CBC,
     padding: CryptoJS.pad.Pkcs7,
   })
-  console.log('解密后的内容：', result)
+  const decryptStr = decryptObj.toString(CryptoJS.enc.Utf8)
+  console.log('解密后的内容：', decryptStr)
 
-  return result
+  return decryptStr
 }
 
 export {
